@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
         // 이더넷 헤더 파싱
         struct libnet_ethernet_hdr* eth_hdr = (struct libnet_ethernet_hdr*)packet;
 
-        printf("Source MAC:    ");
+        printf("Source MAC: ");
         for(int i=0; i<ETHER_ADDR_LEN; i++) {
             if(i == ETHER_ADDR_LEN-1) {
                 printf("%02X\n",eth_hdr->ether_shost[i]);
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        printf("Destination MAC:    ");
+        printf("Destination MAC: ");
         for (int i = 0; i < ETHER_ADDR_LEN; i++) {
             if(i ==ETHER_ADDR_LEN - 1) {
                 printf("%02X\n", eth_hdr->ether_dhost[i]);
@@ -80,18 +80,18 @@ int main(int argc, char* argv[]) {
         // IP 헤더 파싱
         struct libnet_ipv4_hdr* ip_hdr = (struct libnet_ipv4_hdr*)(packet + sizeof(struct libnet_ethernet_hdr));
 
-        printf("Source IP:    ");
+        printf("Source IP: ");
         print_ip_address(ip_hdr->ip_src.s_addr);
-        printf("Destination IP:   ");
+        printf("Destination IP: ");
         print_ip_address(ip_hdr->ip_dst.s_addr);
 
         // TCP 출발지 포트, 목적지 포트 파싱
         struct libnet_tcp_hdr* tcp_hdr = (struct libnet_tcp_hdr*)packet;
-        printf("TCP source port:    %d\n", ntohs(tcp_hdr->th_sport));
-        printf("TCP destination port:    %d\n", ntohs(tcp_hdr->th_dport));
+        printf("TCP source port: %d\n", ntohs(tcp_hdr->th_sport));
+        printf("TCP destination port: %d\n", ntohs(tcp_hdr->th_dport));
 
         uint32_t payload_size = 14 + (ip_hdr->ip_hl)*4 + (tcp_hdr->th_off)*4;
-        printf("Packet payload:    ");
+        printf("Packet payload: ");
         for (int i = payload_size; i < payload_size+20; i++) {
             printf("0x%02X ", packet[i]);
         }
