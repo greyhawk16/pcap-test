@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         return -1;
 
     char errbuf[PCAP_ERRBUF_SIZE];
-    pcap_t* pcap = pcap_open_live(param.dev_, BUFSIZ, 1, 1000, errbuf);
+    pcap_t* pcap = pcap_open_live(param.dev_, BUFSIZ, 1, 1000, errbuf);     // 패킷 캡처
     if (pcap == NULL) {
         fprintf(stderr, "pcap_open_live(%s) return null - %s\n", param.dev_, errbuf);
         return -1;
@@ -55,9 +55,9 @@ int main(int argc, char* argv[]) {
             break;
         }
 
-        // Parse Ethernet header
+        // 이더넷 헤더 파싱
         struct libnet_ethernet_hdr* eth_hdr = (struct libnet_ethernet_hdr*)packet;
-        // printf("Ethernet Headers\n");
+
         printf("Source MAC:    ");
         for(int i=0; i<ETHER_ADDR_LEN; i++) {
             if(i == ETHER_ADDR_LEN-1) {
@@ -77,15 +77,15 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Parse IP headers
+        // IP 헤더 파싱
         struct libnet_ipv4_hdr* ip_hdr = (struct libnet_ipv4_hdr*)(packet + sizeof(struct libnet_ethernet_hdr));
-        // printf("IP Headers\n");
+
         printf("Source IP:    ");
         print_ip_address(ip_hdr->ip_src.s_addr);
         printf("Destination IP:   ");
         print_ip_address(ip_hdr->ip_dst.s_addr);
 
-        // Parse TCP source port, destination port
+        // TCP 출발지 포트, 목적지 포트 파싱
         struct libnet_tcp_hdr* tcp_hdr = (struct libnet_tcp_hdr*)packet;
         printf("TCP source port:    %d\n", ntohs(tcp_hdr->th_sport));
         printf("TCP destination port:    %d\n", ntohs(tcp_hdr->th_dport));
